@@ -1,11 +1,14 @@
+"use client";
+
 import React from "react";
 import { IconButton } from "./button";
 import GithubIcon from "../icons/github.svg";
 import ResetIcon from "../icons/reload.svg";
 import { ISSUE_URL } from "../constant";
 import Locale from "../locales";
-import { downloadAs } from "../utils";
 import { showConfirm } from "./ui-lib";
+import { useSyncStore } from "../store/sync";
+import { useChatStore } from "../store/chat";
 
 interface IErrorBoundaryState {
   hasError: boolean;
@@ -26,13 +29,9 @@ export class ErrorBoundary extends React.Component<any, IErrorBoundaryState> {
 
   clearAndSaveData() {
     try {
-      downloadAs(
-        JSON.stringify(localStorage),
-        "chatgpt-next-web-snapshot.json",
-      );
+      useSyncStore.getState().export();
     } finally {
-      localStorage.clear();
-      location.reload();
+      useChatStore.getState().clearAllData();
     }
   }
 
